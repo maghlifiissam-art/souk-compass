@@ -4,7 +4,7 @@ A bounded cultural-evidence agent for Moroccan creators and small sellers. It ta
 
 ## Current status
 
-Deployed at https://souk-compass.magpro369.workers.dev and live-verified on October 16, 2026: 22 offline tests pass and real end-to-end runs complete against the live hackathon Qloo API and the Gemini free tier. A measured full run takes about 5-6 seconds wall time with about 2 ms of Worker CPU time; under a 5-way parallel burst the budget controls fail closed (HTTP 503 at the free-tier RPM edge, HTTP 429 at the per-IP daily cap) instead of exceeding quotas. Public judge access is the same-origin UI. No saved Qloo responses or recorded examples are included.
+Deployed at https://souk-compass.magpro369.workers.dev and live-verified on October 16, 2026: 22 offline tests pass and real end-to-end runs complete against the live hackathon Qloo API and the Gemini free tier. A measured full run takes about 5-6 seconds wall time with about 2 ms of Worker CPU time; under a 5-way parallel burst the budget controls fail closed (HTTP 503 at the free-tier RPM edge, HTTP 429 at the per-IP daily cap) instead of exceeding quotas. The UI clears previous results at every run start, auto-retries a transient 503 twice with a busy notice, and states the daily reset plainly on 429. Redeployed and re-verified October 16, 2026 (Worker version f4f69579). Public judge access is the same-origin UI. No saved Qloo responses or recorded examples are included.
 
 ## What the prototype does
 
@@ -38,7 +38,7 @@ Only `/search`, `/v2/tags` and `/v2/insights` on `https://hackathon.api.qloo.com
 - Reserve before every generation. A conservative UTF-8-byte estimate plus the output cap and framing margin is used; this is not a formal tokenizer proof. Actual provider usage is reconciled after completion.
 - Failed or timed-out generations retain the full reservation. Request counts are never refunded. Unknown token usage keeps the reservation. The first commit wins. No automatic retries or cross-model fallback exist.
 - A deployment must explicitly choose one live-verified Gemini model. The source list is not a promise that either API ID is currently available.
-- Admission is capped at 150 runs per UTC day globally and 10 per daily salted IP hash. Raw IPs are not stored. Both admission caps are checked before either counter increments in one transaction, so rejected IP attempts cannot consume global slots. Quota limits may stop runs before admission caps.
+- Admission is capped at 200 runs per UTC day globally and 10 per daily salted IP hash. Raw IPs are not stored. Both admission caps are checked before either counter increments in one transaction, so rejected IP attempts cannot consume global slots. Quota limits may stop runs before admission caps.
 - Storage has row caps and old rows are pruned on access. No background polling or KV cache is used.
 - Code-path envelope: at most 8 Qloo fetches + 3 Gemini fetches + 7 Durable Object fetches = 18 application subrequests. Deployment measurement (2026-10-16): about 2 ms CPU and 5-6 s wall per full run; the envelope holds.
 - Workers free-tier CPU and request limits are acceptance gates. A successful dry run does not prove the deployed app fits them. Never upgrade or enable billing to bypass a limit.

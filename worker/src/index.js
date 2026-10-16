@@ -85,7 +85,7 @@ export default {
       if (!env.IP_HASH_SALT) throw new Error('Abuse-control configuration incomplete');
       const digest = await crypto.subtle.digest('SHA-256',new TextEncoder().encode(`${env.IP_HASH_SALT}:${new Date().toISOString().slice(0,10)}:${rawIp}`));
       const ip = Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');
-      if (!(await rpc('/admit',{ip})).allowed) return Response.json({error:'Daily demo capacity reached. Please try tomorrow.'},{status:429,headers});
+      if (!(await rpc('/admit',{ip})).allowed) return Response.json({error:'Today\'s free demo capacity is used up. Budgets reset daily - please try again tomorrow.'},{status:429,headers});
       const qloo = QlooClient.fromEnv(env);
       if (!qloo) throw new Error('Service configuration incomplete');
       const grounded = await runAgent({ brief,qloo,llmPlan:makeTagPlanner(generate,qloo) });
