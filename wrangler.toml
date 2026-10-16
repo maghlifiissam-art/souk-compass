@@ -1,0 +1,23 @@
+name = "souk-compass"
+main = "worker/src/index.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+GEMINI_MODEL = "gemini-3.1-flash-lite"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = true
+
+[[durable_objects.bindings]]
+name = "BUDGET"
+class_name = "BudgetDO"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["BudgetDO"]
+
+# Set GEMINI_MODEL only after its API ID and free-tier access pass live validation.
+# Secrets: RELAY_SHARED_SECRET (to souk-relay.vercel.app), GEMINI_API_KEY, IP_HASH_SALT. Never commit secret values.
+# QLOO_API_KEY stays on the relay host only; the Worker no longer calls Qloo directly.

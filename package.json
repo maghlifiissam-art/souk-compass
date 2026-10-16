@@ -1,0 +1,12 @@
+{
+  "name": "souk-compass",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "wrangler": "^4.151.1"
+  }
+}
